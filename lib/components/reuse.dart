@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class Reuse {
-  static customAlertBox({required BuildContext context, required String text}) {
+  static customAlertBox({
+    required BuildContext context,
+    required String text,
+  }) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {

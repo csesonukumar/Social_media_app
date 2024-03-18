@@ -23,13 +23,13 @@ class _LoginPageState extends State<LoginPage> {
   // sign user in
   signin() async {
     // show loading circle
-    Reuse.customCircularProgressIndicator(context: context);
-    // showDialog(
-    //   context: context,
-    //   builder: (context) => const Center(
-    //     child: CircularProgressIndicator(),
-    //   ),
-    // );
+    // Reuse.customCircularProgressIndicator(context: context);
+    showDialog(
+      context: context,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
