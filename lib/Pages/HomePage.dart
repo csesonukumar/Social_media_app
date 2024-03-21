@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // post Message Method / Function
-  post_Message() {
+  void post_Message() {
     // only post if there is something in the textfield
     if (textController.text.isNotEmpty) {
       // store in firebase
@@ -64,26 +64,26 @@ class _HomePageState extends State<HomePage> {
                   stream: FirebaseFirestore.instance
                       .collection(" User Posts ")
                       .orderBy(
-                        "Timestamp",
+                        "TimeStamp",
                         descending: false,
                       )
                       .snapshots(),
-                  builder: (context, shapshot) {
-                    if (shapshot.hasData) {
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
                       return ListView.builder(
-                        itemCount: shapshot.data!.docs.length,
+                        itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
                           // get the message
-                          final post = shapshot.data!.docs[index];
+                          final post = snapshot.data!.docs[index];
                           return social_Post(
                             message: post['Message'],
                             user: post['UserEmail'],
                           );
                         },
                       );
-                    } else if (shapshot.hasError) {
+                    } else if (snapshot.hasError) {
                       return Center(
-                        child: Text('Error:${shapshot.error}'),
+                        child: Text('Error:${snapshot.error}'),
                       );
                     }
                     return Reuse.customCircularProgressIndicator(
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
-        
+
               // Post Message
               Padding(
                 padding: const EdgeInsets.all(25.0),
@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                           hintText: " Write something on the Social App ",
                           obsecureText: false),
                     ),
-        
+
                     // post button
                     IconButton(
                       onPressed: post_Message,
@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-        
+
               // logged in as
               Text(" Logged in as: " + currentUser.email!),
             ],
@@ -122,3 +122,5 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+

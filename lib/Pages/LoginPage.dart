@@ -172,6 +172,9 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
+    // Delay the execution of authentication to the next microtask
+    // await Future.delayed(Duration.zero);
+
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailTextController.text,
