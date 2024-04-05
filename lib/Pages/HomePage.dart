@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: StreamBuilder(
                   stream: FirebaseFirestore.instance
-                      .collection(" User Posts ")
+                      .collection("User Posts")
                       .orderBy(
                         "TimeStamp",
                         descending: false,
@@ -76,14 +76,14 @@ class _HomePageState extends State<HomePage> {
                           // get the message
                           final post = snapshot.data!.docs[index];
                           return social_Post(
-                            message: post['Message'],
-                            user: post['UserEmail'],
+                            message: post["Message"],
+                            user: post["UserEmail"],
                           );
                         },
                       );
                     } else if (snapshot.hasError) {
                       return Center(
-                        child: Text('Error:${snapshot.error}'),
+                        child: Text("Error:${snapshot.error}"),
                       );
                     }
                     return Reuse.customCircularProgressIndicator(
