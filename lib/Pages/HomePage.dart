@@ -54,73 +54,70 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              // social App
-              Expanded(
-                child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("User Posts")
-                      .orderBy(
-                        "TimeStamp",
-                        descending: false,
-                      )
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          // get the message
-                          final post = snapshot.data!.docs[index];
-                          return social_Post(
-                            message: post["Message"],
-                            user: post["UserEmail"],
-                          );
-                        },
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text("Error:${snapshot.error}"),
-                      );
-                    }
-                    return Reuse.customCircularProgressIndicator(
-                        context: context);
-                  },
-                ),
+      body: Center(
+        child: Column(
+          children: [
+            // social App
+            Expanded(
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("User Posts")
+                    .orderBy(
+                      "TimeStamp",
+                      descending: false,
+                    )
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        // get the message
+                        final post = snapshot.data!.docs[index];
+                        return social_Post(
+                          message: post['Message'],
+                          user: post['UserEmail'],
+                        );
+                      },
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error:${snapshot.error}'),
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               ),
+            ),
 
-              // Post Message
-              Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: MyTextField(
-                          controller: textController,
-                          hintText: " Write something on the Social App ",
-                          obsecureText: false),
-                    ),
+            // Post Message
+            Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: MyTextField(
+                        controller: textController,
+                        hintText: " Write something on the Social App ",
+                        obsecureText: false),
+                  ),
 
-                    // post button
-                    IconButton(
-                      onPressed: post_Message,
-                      icon: const Icon(Icons.arrow_circle_up),
-                    ),
-                  ],
-                ),
+                  // post button
+                  IconButton(
+                    onPressed: post_Message,
+                    icon: const Icon(Icons.arrow_circle_up),
+                  ),
+                ],
               ),
+            ),
 
-              // logged in as
-              Text(" Logged in as: " + currentUser.email!),
-            ],
-          ),
+            // logged in as
+            Text(" Logged in as: " + currentUser.email!),
+          ],
         ),
       ),
     );
   }
 }
-
-
