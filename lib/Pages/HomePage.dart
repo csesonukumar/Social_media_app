@@ -62,8 +62,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
+      drawer: MyDrawer(
+        onLogoutTap: signout,
+        onProfileTap: goToProfilePage,
+      ),
       appBar: AppBar(
         backgroundColor: Colors.grey[900],
+        iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           "Home Page",
           style: TextStyle(color: Colors.white),
@@ -72,15 +77,10 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(
               Icons.logout,
-              color: Colors.white,
             ),
             onPressed: signout,
           ),
         ],
-      ),
-      drawer: MyDrawer(
-        onLogoutTap: signout,
-        onProfileTap: goToProfilePage,
       ),
       body: Center(
         child: Column(

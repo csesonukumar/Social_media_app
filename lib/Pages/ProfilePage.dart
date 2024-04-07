@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:social_media_app/components/MyTextBox.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -18,6 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: Text("Profile Page"),
         backgroundColor: Colors.grey[900],
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: ListView(
         children: [
@@ -43,7 +45,10 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.only(left: 25.0),
             child: Text("My Details",style: TextStyle(color: Colors.grey[600]),),
           ),
+          
           // username
+          MyTextBox(text: "Sonu", sectionName: "username"),
+
           // bio
           // user posts
         ],
