@@ -15,7 +15,42 @@ class _ProfilePageState extends State<ProfilePage> {
   final currentUser = FirebaseAuth.instance.currentUser!;
 
   // edit field
-  Future<void> editField(String field) async {}
+  Future<void> editField(String field) async {
+    String newValue = "";
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey[900],
+        title: Text(
+          "Edit" + field,
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        content: TextField(
+          autofocus: true,
+          style: TextStyle(
+            color: Colors.white,
+          ),
+          decoration: InputDecoration(
+            hintText: "Enter new $field",
+            hintStyle: TextStyle(
+              color: Colors.grey,
+            ),
+          ),
+          onChanged: (value) => {
+            newValue = value;
+          },
+        ),
+        actions: [
+
+          // calcel Button
+          TextButton(onPressed: () => Navigator.pop(context), child: Text("Cancel",style: TextStyle(color: Colors.white,),),),
+          // Save Button
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,14 +100,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
                 // username
                 MyTextBox(
-                  text: "Sonu",
+                  text: userData['username'],
                   sectionName: "username",
                   onPressed: () => editField('username'),
                 ),
 
                 // bio
                 MyTextBox(
-                  text: "empty bio",
+                  text: userData['bio'],
                   sectionName: "bio",
                   onPressed: () => editField('bio'),
                 ),
