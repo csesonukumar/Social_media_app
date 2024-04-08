@@ -39,7 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           onChanged: (value) => {
-            newValue = value;
+            newValue = value
           },
         ),
         actions: [
