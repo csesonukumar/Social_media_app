@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+
+class comment extends StatelessWidget {
+  final String text;
+  final String user;
+  final String time;
+  const comment({
+    super.key,
+    required this.text,
+    required this.time,
+    required this.user,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        children: [
+          // comment
+          Text(text),
+
+          // user, time
+          Row(
+            children: [
+              Text(user),
+              Text(" . "),
+              Text(time),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

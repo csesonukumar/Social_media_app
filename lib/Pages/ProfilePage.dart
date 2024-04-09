@@ -13,7 +13,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   // user
   final currentUser = FirebaseAuth.instance.currentUser!;
-
+  // all users
+  final usersCollection = FirebaseFirestore.instance.collection("Users");
   // edit field
   Future<void> editField(String field) async {
     String newValue = "";
@@ -38,18 +39,39 @@ class _ProfilePageState extends State<ProfilePage> {
               color: Colors.grey,
             ),
           ),
-          onChanged: (value) => {
-            newValue = value
-          },
+          onChanged: (value) => {newValue = value},
         ),
         actions: [
-
           // calcel Button
-          TextButton(onPressed: () => Navigator.pop(context), child: Text("Cancel",style: TextStyle(color: Colors.white,),),),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "Cancel",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+
           // Save Button
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(newValue),
+            child: Text(
+              "Save",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
         ],
       ),
     );
+
+    // Update in firestore
+    if(newValue.trim().length > 0){
+      // only update if there is something in the textfield
+      await usersCollection.doc(currentUser.email).update({field:newValue});
+    }
   }
 
   @override

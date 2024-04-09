@@ -1,7 +1,13 @@
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:social_media_app/components/CommentButton.dart';
 import 'package:social_media_app/components/LikeButton.dart';
+import 'package:social_media_app/helper/helperMethods.dart';
+
+import 'comment.dart';
 
 class social_Post extends StatefulWidget {
   final String message;
@@ -25,6 +31,9 @@ class _social_PostState extends State<social_Post> {
   final currentUser = FirebaseAuth.instance.currentUser!;
   bool isLiked = false;
 
+  // comment text controller
+  final commentTextController = TextEditingController();
+  //
   @override
   void initState() {
     // TODO: implement initState
@@ -55,6 +64,58 @@ class _social_PostState extends State<social_Post> {
     }
   }
 
+  // add a comment
+  void addComment(String commentText) {
+    // write the comment to firestore under the comments collection for this post
+    FirebaseFirestore.instance
+        .collection("User Posts")
+        .doc(widget.postId)
+        .collection("Commemts")
+        .add({
+      "CommentText": commentText,
+      "CommentedBy": currentUser.email,
+      "CommentTime": Timestamp.now() // remember to format this when displaying
+    });
+  }
+
+  // show a dialog box for adding comment
+  void showCommentDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Add Comment"),
+        content: TextField(
+          controller: commentTextController,
+        ),
+        actions: [
+          // ----------Calcel Button
+          TextButton(
+            onPressed: () {
+              // ----pop box
+              Navigator.pop(context);
+              // ------- clear controller
+              commentTextController.clear();
+            },
+            child: Text("Cancel"),
+          ),
+          // -----------post button
+          TextButton(
+            onPressed: () {
+              // -------add comment
+              addComment(commentTextController.text);
+              // --------pop box
+              Navigator.pop(context);
+              // ------- clear controller
+              commentTextController.clear();
+            },
+            child: Text("Post"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -64,40 +125,111 @@ class _social_PostState extends State<social_Post> {
       ),
       margin: EdgeInsets.only(top: 25, left: 25, right: 25),
       padding: EdgeInsets.all(25),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            children: [
-              // Like button
-              LikeButton(
-                isLiked: isLiked,
-                onTap: toogleLike,
-              ),
-
-              const SizedBox(height: 5,),
-
-              // Like count
-              Text(widget.likes.length.toString(),style: TextStyle(color: Colors.grey,),),
-            ],
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-
-          // message and user email
+          // ----------Social Post
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // --------message
+              Text(widget.message),
+
+              const SizedBox(height: 5),
+
+              // --------user
               Text(
                 widget.user,
                 style: TextStyle(
                   color: Colors.grey[500],
                 ),
               ),
-              const SizedBox(height: 10),
-              Text(widget.message),
             ],
-          )
+          ),
+
+          const SizedBox(width: 20),
+
+          // ------- buttons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // ----------LIKE
+              Column(
+                children: [
+                  // Like button
+                  LikeButton(
+                    isLiked: isLiked,
+                    onTap: toogleLike,
+                  ),
+
+                  const SizedBox(
+                    height: 5,
+                  ),
+
+                  // Like count
+                  Text(
+                    widget.likes.length.toString(),
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(width: 10),
+              // -------comment
+              Column(
+                children: [
+                  // --------comment button
+                  CommentButton(onTap: showCommentDialog),
+
+                  const SizedBox(
+                    height: 5,
+                  ),
+
+                  // Like count
+                  Text(
+                    '0',
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+
+          ////------- comments under the post
+          // StreamBuilder<QuerySnapshot>(
+          //   stream: FirebaseFirestore.instance
+          //       .collection("User Posts")
+          //       .doc(widget.postId)
+          //       .collection("Comments")
+          //       .orderBy("CommentTime", descending: true)
+          //       .snapshots(),
+          //   builder: (context, snapshot) {
+          //     // ------show loading circle if no data yet
+          //     if (!snapshot.hasData) {
+          //       return const Center(
+          //         child: CircularProgressIndicator(),
+          //       );
+          //     }
+          //     return ListView(
+          //       shrinkWrap: true, // --------for nested lists
+          //       physics: const NeverScrollableScrollPhysics(),
+          //       children: snapshot.data!.docs.map((doc) {
+          //         // ----- get the comment
+          //         final commentData = doc.data() as Map<String, dynamic>;
+          //         // -----return the comment
+          //         return comment(
+          //           text: commentData["CommentText"],
+          //           user: commentData["CommentedBy"],
+          //           time: formatDate(commentData["CommentTime"]),
+          //         );
+          //       }).toList(),
+          //     );
+          //   },
+          // )
         ],
       ),
     );
