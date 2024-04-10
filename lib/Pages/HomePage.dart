@@ -62,17 +62,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).colorScheme.background,
       drawer: MyDrawer(
         onLogoutTap: signout,
         onProfileTap: goToProfilePage,
       ),
       appBar: AppBar(
-        backgroundColor: Colors.grey[900],
-        iconTheme: IconThemeData(color: Colors.white),
+        // backgroundColor: Colors.grey[900],
+        //iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           "Home Page",
-          style: TextStyle(color: Colors.white),
+          // style: TextStyle(color: Colors.white),
         ),
         actions: [
           IconButton(
