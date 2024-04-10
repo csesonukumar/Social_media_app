@@ -1,17 +1,15 @@
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:social_media_app/components/CommentButton.dart';
 import 'package:social_media_app/components/LikeButton.dart';
 import 'package:social_media_app/helper/helperMethods.dart';
-
 import 'comment.dart';
 
 class social_Post extends StatefulWidget {
   final String message;
   final String user;
+  final String time;
   final String postId;
   final List<String> likes;
   const social_Post({
@@ -20,6 +18,7 @@ class social_Post extends StatefulWidget {
     required this.user,
     required this.postId,
     required this.likes,
+    required this.time,
   });
 
   @override
@@ -86,6 +85,7 @@ class _social_PostState extends State<social_Post> {
         title: Text("Add Comment"),
         content: TextField(
           controller: commentTextController,
+          decoration: InputDecoration(hintText: "Write a comment.."),
         ),
         actions: [
           // ----------Calcel Button
@@ -120,7 +120,7 @@ class _social_PostState extends State<social_Post> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey[200],
         borderRadius: BorderRadius.circular(8),
       ),
       margin: EdgeInsets.only(top: 25, left: 25, right: 25),
@@ -138,11 +138,12 @@ class _social_PostState extends State<social_Post> {
               const SizedBox(height: 5),
 
               // --------user
-              Text(
-                widget.user,
-                style: TextStyle(
-                  color: Colors.grey[500],
-                ),
+              Row(
+                children: [
+                  Text(widget.user,style: TextStyle(color: Colors.grey[400])),
+                  Text(" . ",style: TextStyle(color: Colors.grey[400])),
+                  Text(widget.time,style: TextStyle(color: Colors.grey[400])),
+                ],
               ),
             ],
           ),
@@ -183,53 +184,51 @@ class _social_PostState extends State<social_Post> {
                   // --------comment button
                   CommentButton(onTap: showCommentDialog),
 
-                  const SizedBox(
-                    height: 5,
-                  ),
+                  const SizedBox(height: 5),
 
-                  // Like count
+                  // ------ comment count
                   Text(
                     '0',
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
+                    style: const TextStyle(color: Colors.grey),
                   ),
                 ],
               ),
             ],
           ),
 
-          ////------- comments under the post
-          // StreamBuilder<QuerySnapshot>(
-          //   stream: FirebaseFirestore.instance
-          //       .collection("User Posts")
-          //       .doc(widget.postId)
-          //       .collection("Comments")
-          //       .orderBy("CommentTime", descending: true)
-          //       .snapshots(),
-          //   builder: (context, snapshot) {
-          //     // ------show loading circle if no data yet
-          //     if (!snapshot.hasData) {
-          //       return const Center(
-          //         child: CircularProgressIndicator(),
-          //       );
-          //     }
-          //     return ListView(
-          //       shrinkWrap: true, // --------for nested lists
-          //       physics: const NeverScrollableScrollPhysics(),
-          //       children: snapshot.data!.docs.map((doc) {
-          //         // ----- get the comment
-          //         final commentData = doc.data() as Map<String, dynamic>;
-          //         // -----return the comment
-          //         return comment(
-          //           text: commentData["CommentText"],
-          //           user: commentData["CommentedBy"],
-          //           time: formatDate(commentData["CommentTime"]),
-          //         );
-          //       }).toList(),
-          //     );
-          //   },
-          // )
+          const SizedBox(height: 10),
+
+          //------- comments under the post
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection("User Posts")
+                .doc(widget.postId)
+                .collection("Commemts")
+                .orderBy("CommentTime", descending: true)
+                .snapshots(),
+            builder: (context, snapshot) {
+              // ------show loading circle if no data yet
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return ListView(
+                shrinkWrap: true, // --------for nested lists
+                physics: const NeverScrollableScrollPhysics(),
+                children: snapshot.data!.docs.map((doc) {
+                  // ----- get the comment
+                  final commentData = doc.data() as Map<String, dynamic>;
+                  // -----return the comment
+                  return comment(
+                    text: commentData["CommentText"],
+                    user: commentData["CommentedBy"],
+                    time: formatDate(commentData["CommentTime"]),
+                  );
+                }).toList(),
+              );
+            },
+          )
         ],
       ),
     );

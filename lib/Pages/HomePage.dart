@@ -5,6 +5,7 @@ import 'package:social_media_app/components/My_Text_Field.dart';
 import 'package:social_media_app/components/Social_post.dart';
 import 'package:social_media_app/components/drawer.dart';
 import 'package:social_media_app/components/reuse.dart';
+import 'package:social_media_app/helper/helperMethods.dart';
 
 import 'ProfilePage.dart';
 
@@ -105,6 +106,7 @@ class _HomePageState extends State<HomePage> {
                         return social_Post(
                           message: post['Message'],
                           user: post['UserEmail'],
+                          time: formatDate(post['TimeStamp']),
                           postId: post.id,
                           likes: List<String>.from(post['Likes'] ?? []),
                         );
